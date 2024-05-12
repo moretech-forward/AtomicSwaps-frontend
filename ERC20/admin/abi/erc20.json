@@ -1,0 +1,4 @@
+[
+    "function approve(address spender, uint256 value) returns (bool)",
+    "function decimals() view returns (uint8)"
+]

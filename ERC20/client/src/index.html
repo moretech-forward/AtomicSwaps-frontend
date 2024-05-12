@@ -259,6 +259,12 @@
                 </li>
                 <li>
                     <p class="flex items-center justify-between">
+                        <span>Asset: </span>
+                        <span>ERC20</span>
+                    </p>
+                </li>
+                <li>
+                    <p class="flex items-center justify-between">
                         <span>Other Party: </span>
                         <span class="flex items-center">
                             <button
@@ -367,6 +373,63 @@
                             </button>
                             <span id="hash-key-content"> Loading... </span>
                             <span class="hidden" id="hash-key-full"></span>
+                        </span>
+                    </p>
+                </li>
+                <li>
+                    <p class="flex items-center justify-between">
+                        <span>Token: </span>
+                        <span class="flex items-center"
+                            ><button
+                                class="inline-flex items-center mr-2 text-sm font-medium text-gray-800 shadow-sm js-clipboard-example disabled:opacity-50 disabled:pointer-events-none dark:text-white"
+                                data-clipboard-action="copy"
+                                data-clipboard-success-text="Copied"
+                                data-clipboard-target="#hash-key-full"
+                                type="button"
+                            >
+                                <svg
+                                    class="transition js-clipboard-default size-4 group-hover:rotate-6"
+                                    fill="none"
+                                    height="24"
+                                    stroke="currentColor"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    viewBox="0 0 24 24"
+                                    width="24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <rect
+                                        height="4"
+                                        rx="1"
+                                        ry="1"
+                                        width="8"
+                                        x="8"
+                                        y="2"
+                                    ></rect>
+                                    <path
+                                        d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                                    ></path>
+                                </svg>
+                                <svg
+                                    class="hidden text-blue-600 js-clipboard-success size-4"
+                                    fill="none"
+                                    height="24"
+                                    stroke="currentColor"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    viewBox="0 0 24 24"
+                                    width="24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <polyline
+                                        points="20 6 9 17 4 12"
+                                    ></polyline>
+                                </svg>
+                            </button>
+                            <span id="token-content"> </span>
+                            <span id="token-full" class="hidden"></span>
                         </span>
                     </p>
                 </li>
@@ -647,7 +710,7 @@ ${message}
         } from 'https://cdnjs.cloudflare.com/ajax/libs/ethers/6.12.1/ethers.min.js'
 
         const abi = [
-            'constructor(address _otherParty, uint256 _amount) payable',
+            'constructor(address _token, address _otherParty, uint256 _amount) payable',
             'function amount() view returns (uint256)',
             'function confirmSwap(string _key)',
             'function deadline() view returns (uint256)',
@@ -657,6 +720,7 @@ ${message}
             'function myAddr() view returns (address)',
             'function otherParty() view returns (address)',
             'function owner() view returns (address)',
+            'function token() view returns (address)',
             'function withdrawal()',
         ]
 
@@ -674,10 +738,12 @@ ${message}
         const other_party_full = document.getElementById('other-party-full')
         const hash_key_content = document.getElementById('hash-key-content')
         const hash_key_full = document.getElementById('hash-key-full')
+        const token_content = document.getElementById('token-content')
+        const token_full = document.getElementById('token-full')
 
         const setInfo = async () => {
             const deadline = await contract.deadline()
-            const date = new Date(Number(deadline))
+            const date = new Date(Number(deadline) * 1000)
 
             deadline_content.innerHTML = date.toDateString()
 
@@ -693,6 +759,9 @@ ${message}
                 await contract.hashKey()
             )
             hash_key_full.innerHTML = await contract.hashKey()
+
+            token_content.innerHTML = shortenAddress(await contract.token())
+            token_full.innerHTML = await contract.token()
         }
 
         const getContractAddress = () => {

@@ -1,0 +1,896 @@
+<body>
+    <meta charset="UTF-8" />
+    <meta
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+        name="viewport"
+    />
+    <meta content="ie=edge" http-equiv="X-UA-Compatible" />
+    <link href="css/output.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+        rel="stylesheet"
+    />
+
+    <div class="p-2 hidden invisible">
+        <div class="accordion">
+            <div class="accordion-item">
+                <section class="m-auto w-100">
+                    <h3 id="headingOne" class="accordion-header text-center">
+                        <button
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapse_myAddr"
+                                aria-expanded="true"
+                                aria-controls="collapse_myAddr"
+                                class="accordion-button collapsed"
+                        >
+                            myAddr
+                        </button>
+                    </h3>
+                    <div
+                            id="collapse_myAddr"
+                            aria-labelledby="headingOne"
+                            data-bs-parent="#accordionExample"
+                            class="accordion-collapse collapse"
+                    >
+                        <div class="accordion-body">
+                            <form id="form-myAddr" class="d-flex flex-column gap-2 p-2">
+                                <div>
+                                    <button
+                                            id="btn"
+                                            type="button"
+                                            data-form-name="myAddr"
+                                            class="btn btn-primary mt-2"
+                                    >
+                                        Read
+                                    </button>
+                                </div>
+                                <div>
+                                    <p>Response:</p>
+                                    <div>
+                                        :
+                                        <span
+                                                id="form-output-myAddr-0"
+                                                data-form-name="myAddr"
+                                                data-field-type="address"
+                                        >address</span
+                                        >
+                                        <br />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <main
+        class="flex flex-col items-center w-full pt-20"
+        style="min-height: 1000px"
+    >
+        <div class="absolute z-20 flex flex-col items-center gap-4 top-4 right-6">
+            <button
+                class="p-2 rounded-md shadow-xl border-2 border-gray-300 flex items-center block font-medium text-gray-600 hs-dark-mode-active:hidden hs-dark-mode group hover:text-blue-600 dark:text-neutral-400 dark:hover:text-neutral-500"
+                data-hs-theme-click-value="dark"
+                type="button"
+            >
+                <svg
+                    class="flex-shrink-0 size-4"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+                </svg>
+            </button>
+            <button
+                class="p-2 rounded-md shadow-xl border-2 border-neutral-800 flex items-center hidden font-medium text-gray-600 hs-dark-mode-active:block hs-dark-mode group hover:text-blue-600 dark:text-neutral-400 dark:hover:text-neutral-500"
+                data-hs-theme-click-value="light"
+                type="button"
+            >
+                <svg
+                    class="flex-shrink-0 size-4"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <circle cx="12" cy="12" r="4"></circle>
+                    <path d="M12 2v2"></path>
+                    <path d="M12 20v2"></path>
+                    <path d="m4.93 4.93 1.41 1.41"></path>
+                    <path d="m17.66 17.66 1.41 1.41"></path>
+                    <path d="M2 12h2"></path>
+                    <path d="M20 12h2"></path>
+                    <path d="m6.34 17.66-1.41 1.41"></path>
+                    <path d="m19.07 4.93-1.41 1.41"></path>
+                </svg>
+            </button>
+        </div>
+        <p class="text-2xl text-center">Atomic Swaps - Admin</p>
+        <div class="flex p-1 mt-12 bg-gray-100 rounded-lg dark:bg-neutral-800">
+            <div class="relative flex gap-x-1">
+                <button
+                    class="tab tab-active relative z-10 px-3 py-2 text-xs font-medium transition duration-200 border border-transparent rounded-md md:text-sm hover:border-gray-400 dark:text-neutral-200 dark:hover:text-white dark:hover:border-neutral-500"
+                    data-tab="deposit"
+                    type="button"
+                    role="tab"
+                >
+                    Deposit
+                </button>
+                <button
+                    class="tab relative z-10 px-3 py-2 text-xs font-medium text-gray-800 transition duration-200 border border-transparent rounded-md md:text-sm hover:border-gray-400 dark:text-neutral-200 dark:hover:text-white dark:hover:border-neutral-500"
+                    data-tab="withdraw"
+                    type="button"
+                    role="tab"
+                >
+                    Withdraw
+                </button>
+            </div>
+        </div>
+        <div class="mt-6">
+            <div
+                class="tab-item tab-item-active"
+                id="deposit"
+                style="animation-duration: 0.35s"
+            >
+                <form
+                    class="relative flex flex-col gap-4 p-4 bg-white border border-gray-200 shadow-sm rounded-xl md:p-5 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 w-96"
+                    id="deposit-form"
+                >
+                    <div class="flex items-center">
+                        <input
+                            class="text-blue-600 border-gray-200 rounded cursor-pointer shrink-0 mt-0-5 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
+                            id="flag"
+                            name="flag"
+                            type="checkbox"
+                        />
+                        <label
+                            class="text-sm text-gray-500 ms-3 dark:text-neutral-400"
+                            for="flag"
+                        >
+                            i am the initiator of the swap</label
+                        >
+                    </div>
+                    <div>
+                        <label
+                            class="block mb-2 text-sm font-medium dark:text-white"
+                            for="hash-key"
+                            >Hash Key</label
+                        >
+                        <input
+                            aria-describedby="hs-input-helper-text"
+                            class="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                            id="hash-key"
+                            name="hash-key"
+                            placeholder="Type here"
+                            type="text"
+                        />
+                        <p
+                            class="mt-2 text-sm text-gray-500 dark:text-neutral-500"
+                        >
+                            Enter the key with which you can make a swap.
+                        </p>
+                    </div>
+                    <div>
+                        <label
+                            class="block mb-2 text-sm font-medium dark:text-white"
+                            for="deadline"
+                            >Deadline</label
+                        >
+                        <input
+                            aria-describedby="hs-input-helper-text"
+                            class="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                            id="deadline"
+                            name="deadline"
+                            placeholder="Type here"
+                            type="date"
+                        />
+                        <p
+                            class="mt-2 text-sm text-gray-500 dark:text-neutral-500"
+                        >
+                            Select the date during which you can make the swap.
+                        </p>
+                    </div>
+                    <button
+                        class="items-center px-4 py-3 text-sm font-semibold text-center text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                        id="deposit-button"
+                        type="submit"
+                    >
+                        Deposit
+                    </button>
+
+                    <div id="deposit-form-loader" class="absolute top-0 start-0 w-full h-full bg-custom-blur rounded-lg flex items-center justify-center flex-col gap-2 hidden">
+                        <div class="animate-spin inline-block size-6" role="status" aria-label="loading">
+                            <svg class="fill-blue-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);"><path d="M12 22c5.421 0 10-4.579 10-10h-2c0 4.337-3.663 8-8 8s-8-3.663-8-8c0-4.336 3.663-8 8-8V2C6.579 2 2 6.58 2 12c0 5.421 4.579 10 10 10z"></path></svg>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div
+                class="hidden tab-item"
+                id="withdraw"
+                style="animation-duration: 0.35s"
+            >
+                <div
+                    class="relative flex flex-col p-4 bg-white border border-gray-200 shadow-sm rounded-xl md:p-5 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 w-96"
+                >
+                    <ul
+                        class="space-y-2 text-sm text-gray-600 list-disc marker:text-blue-600 ps-5 dark:text-neutral-400"
+                    >
+                        <li>
+                            <p class="flex items-center justify-between">
+                                <span>Key: </span>
+                                <span class="flex items-center"
+                                ><button
+                                        class="inline-flex items-center mr-2 text-sm font-medium text-gray-800 shadow-sm js-clipboard-example disabled:opacity-50 disabled:pointer-events-none dark:text-white"
+                                        data-clipboard-action="copy"
+                                        data-clipboard-success-text="Copied"
+                                        data-clipboard-target="#key-full"
+                                        type="button"
+                                >
+                                        <svg
+                                                class="transition js-clipboard-default size-4 group-hover:rotate-6"
+                                                fill="none"
+                                                height="24"
+                                                stroke="currentColor"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                viewBox="0 0 24 24"
+                                                width="24"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <rect
+                                                    height="4"
+                                                    rx="1"
+                                                    ry="1"
+                                                    width="8"
+                                                    x="8"
+                                                    y="2"
+                                            ></rect>
+                                            <path
+                                                    d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                                            ></path>
+                                        </svg>
+                                        <svg
+                                                class="hidden text-blue-600 js-clipboard-success size-4"
+                                                fill="none"
+                                                height="24"
+                                                stroke="currentColor"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                viewBox="0 0 24 24"
+                                                width="24"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <polyline
+                                                    points="20 6 9 17 4 12"
+                                            ></polyline>
+                                        </svg></button>
+                                    <span id="key-content">
+                                    </span>
+                                    <span id="key-full" class="hidden"></span>
+                                </span>
+                            </p>
+                        </li>
+                        <li>
+                            <p class="flex items-center justify-between">
+                                <span>Deadline: </span>
+                                <span id="deadline-content">
+                                </span>
+                            </p>
+                        </li>
+                        <li>
+                            <p class="flex items-center justify-between">
+                                <span>Owner: </span>
+                                <span class="flex items-center">
+                                    <button
+                                        class="inline-flex items-center mr-2 text-sm font-medium text-gray-800 shadow-sm js-clipboard-example disabled:opacity-50 disabled:pointer-events-none dark:text-white"
+                                        data-clipboard-action="copy"
+                                        data-clipboard-success-text="Copied"
+                                        data-clipboard-target="#owner-full"
+                                        type="button"
+                                    >
+                                        <svg
+                                            class="transition js-clipboard-default size-4 group-hover:rotate-6"
+                                            fill="none"
+                                            height="24"
+                                            stroke="currentColor"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            viewBox="0 0 24 24"
+                                            width="24"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <rect
+                                                height="4"
+                                                rx="1"
+                                                ry="1"
+                                                width="8"
+                                                x="8"
+                                                y="2"
+                                            ></rect>
+                                            <path
+                                                d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                                            ></path></svg
+                                        ><svg
+                                            class="hidden text-blue-600 js-clipboard-success size-4"
+                                            fill="none"
+                                            height="24"
+                                            stroke="currentColor"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            viewBox="0 0 24 24"
+                                            width="24"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <polyline
+                                                points="20 6 9 17 4 12"
+                                            ></polyline>
+                                        </svg></button
+                                    >
+                                    <span id="owner-content">
+                                    </span>
+                                    <span id="owner-full" class="hidden"></span>
+                                </span>
+                            </p>
+                        </li>
+                        <li>
+                            <p class="flex items-center justify-between">
+                                <span>Asset: </span>
+                                <span>Native</span>
+                            </p>
+                        </li>
+                        <li>
+                            <p class="flex items-center justify-between">
+                                <span>Other Party: </span>
+                                <span class="flex items-center">
+                                    <button
+                                        class="inline-flex items-center mr-2 text-sm font-medium text-gray-800 shadow-sm js-clipboard-example disabled:opacity-50 disabled:pointer-events-none dark:text-white"
+                                        data-clipboard-action="copy"
+                                        data-clipboard-success-text="Copied"
+                                        data-clipboard-target="#other-party-full"
+                                        type="button"
+                                    >
+                                        <svg
+                                            class="transition js-clipboard-default size-4 group-hover:rotate-6"
+                                            fill="none"
+                                            height="24"
+                                            stroke="currentColor"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            viewBox="0 0 24 24"
+                                            width="24"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <rect
+                                                height="4"
+                                                rx="1"
+                                                ry="1"
+                                                width="8"
+                                                x="8"
+                                                y="2"
+                                            ></rect>
+                                            <path
+                                                d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                                            ></path></svg
+                                        ><svg
+                                            class="hidden text-blue-600 js-clipboard-success size-4"
+                                            fill="none"
+                                            height="24"
+                                            stroke="currentColor"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            viewBox="0 0 24 24"
+                                            width="24"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <polyline
+                                                points="20 6 9 17 4 12"
+                                            ></polyline>
+                                        </svg></button
+                                    >
+                                    <span id="other-party-content">
+                                    </span>
+                                    <span id="other-party-full" class="hidden"></span>
+                                </span>
+                            </p>
+                        </li>
+                        <li>
+                            <p class="flex items-center justify-between">
+                                <span>Hash Key: </span>
+                                <span class="flex items-center"
+                                    ><button
+                                        class="inline-flex items-center mr-2 text-sm font-medium text-gray-800 shadow-sm js-clipboard-example disabled:opacity-50 disabled:pointer-events-none dark:text-white"
+                                        data-clipboard-action="copy"
+                                        data-clipboard-success-text="Copied"
+                                        data-clipboard-target="#hash-key-full"
+                                        type="button"
+                                    >
+                                        <svg
+                                            class="transition js-clipboard-default size-4 group-hover:rotate-6"
+                                            fill="none"
+                                            height="24"
+                                            stroke="currentColor"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            viewBox="0 0 24 24"
+                                            width="24"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <rect
+                                                height="4"
+                                                rx="1"
+                                                ry="1"
+                                                width="8"
+                                                x="8"
+                                                y="2"
+                                            ></rect>
+                                            <path
+                                                d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                                            ></path>
+                                        </svg>
+                                        <svg
+                                            class="hidden text-blue-600 js-clipboard-success size-4"
+                                            fill="none"
+                                            height="24"
+                                            stroke="currentColor"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            viewBox="0 0 24 24"
+                                            width="24"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <polyline
+                                                points="20 6 9 17 4 12"
+                                            ></polyline>
+                                        </svg></button>
+                                    <span id="hash-key-content">
+                                    </span>
+                                    <span id="hash-key-full" class="hidden"></span>
+                                </span>
+                            </p>
+                        </li>
+                    </ul>
+                    <button
+                        class="items-center px-4 py-3 mt-6 text-sm font-semibold text-center text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                        type="button"
+                        id="withdraw-button"
+                    >
+                        Withdraw all
+                    </button>
+
+                    <div id="withdraw-form-loader" class="absolute top-0 start-0 w-full h-full bg-custom-blur rounded-lg flex items-center justify-center flex-col gap-2 hidden">
+                        <div class="animate-spin inline-block size-6" role="status" aria-label="loading">
+                            <svg class="fill-blue-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);"><path d="M12 22c5.421 0 10-4.579 10-10h-2c0 4.337-3.663 8-8 8s-8-3.663-8-8c0-4.336 3.663-8 8-8V2C6.579 2 2 6.58 2 12c0 5.421 4.579 10 10 10z"></path></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div
+        class="fixed z-10 flex flex-col gap-4 items-center w-full top-4 w-96 min-h-10"
+        id="toastContainer"
+    ></div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/preline@2.1.0/dist/preline.min.js"></script>
+    <script
+        crossorigin="anonymous"
+        integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw=="
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"
+    ></script>
+<!--    utils-->
+    <script>
+        function showToast(message, status, timeout = 5000) {
+            const toastContainer = document.getElementById('toastContainer')
+            const toast = document.createElement('div')
+            let htmlTemplate = ''
+            switch (status) {
+                case 'info':
+                    htmlTemplate = `
+<div class="min-w-xs min-h-10 bg-white border border-gray-200 shadow-lg rounded-xl dark:bg-neutral-800 dark:border-neutral-700" role="alert">
+<div class="flex p-4">
+<div class="flex-shrink-0">
+<svg class="flex-shrink-0 size-4 text-blue-500 mt-0.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+<path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"></path>
+	</svg>
+	</div>
+<div class="ms-3">
+<p class="text-sm text-gray-700 dark:text-neutral-400">
+${message}
+	</p>
+	</div>
+	</div>
+	</div>
+`
+                    break
+                case 'success':
+                    htmlTemplate = `
+<div class="min-w-xs min-h-10 bg-white border border-gray-200 shadow-lg rounded-xl dark:bg-neutral-800 dark:border-neutral-700" role="alert">
+<div class="flex p-4">
+<div class="flex-shrink-0">
+<svg class="flex-shrink-0 size-4 text-teal-500 mt-0.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"></path>
+	</svg>
+	</div>
+<div class="ms-3">
+<p class="text-sm text-gray-700 dark:text-neutral-400">
+${message}
+	</p>
+	</div>
+	</div>
+	</div>
+`
+                    break
+                case 'error':
+                    htmlTemplate = `
+<div class="min-w-xs min-h-10 bg-white border border-gray-200 shadow-lg rounded-xl dark:bg-neutral-800 dark:border-neutral-700" role="alert">
+<div class="flex p-4">
+<div class="flex-shrink-0">
+<svg class="flex-shrink-0 size-4 text-red-500 mt-0.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"></path>
+	</svg>
+	</div>
+<div class="ms-3">
+<p class="text-sm text-gray-700 dark:text-neutral-400">
+${message}
+	</p>
+	</div>
+	</div>
+	</div>
+`
+                    break
+                case 'warning':
+                    htmlTemplate = `
+<div class="min-w-xs min-h-10 bg-white border border-gray-200 shadow-lg rounded-xl dark:bg-neutral-800 dark:border-neutral-700" role="alert">
+<div class="flex p-4">
+<div class="flex-shrink-0">
+<svg class="flex-shrink-0 size-4 text-yellow-500 mt-0.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path>
+	</svg>
+	</div>
+<div class="ms-3">
+<p class="text-sm text-gray-700 dark:text-neutral-400">
+${message}
+	</p>
+	</div>
+	</div>
+	</div>
+`
+                    break
+            }
+            toast.innerHTML = htmlTemplate
+            toastContainer.appendChild(toast)
+            toast.classList.add(
+                'animate__animated',
+                'animate__faster',
+                'animate__fadeInDown'
+            )
+            setTimeout(() => {
+                toast.classList.remove('animate__fadeInDown')
+                toast.classList.add('animate__fadeOutUp')
+                setTimeout(() => {
+                    toastContainer.removeChild(toast)
+                }, 500)
+            }, timeout)
+        }
+
+        function shortenAddress(address) {
+            if (address.length < 10) return address; // Если адрес слишком короткий, возвращаем его как есть
+            return address.slice(0, 6) + "..." + address.slice(-5); // Возвращаем сокращенный адрес
+        }
+
+        const html = document.querySelector('html')
+        const isLightOrAuto =
+            localStorage.getItem('hs_theme') === 'light' ||
+            (localStorage.getItem('hs_theme') === 'auto' &&
+                !window.matchMedia('(prefers-color-scheme: dark)').matches)
+        const isDarkOrAuto =
+            localStorage.getItem('hs_theme') === 'dark' ||
+            (localStorage.getItem('hs_theme') === 'auto' &&
+                window.matchMedia('(prefers-color-scheme: dark)').matches)
+        if (isLightOrAuto && html.classList.contains('dark'))
+            html.classList.remove('dark')
+        else if (isDarkOrAuto && html.classList.contains('light'))
+            html.classList.remove('light')
+        else if (isDarkOrAuto && !html.classList.contains('dark'))
+            html.classList.add('dark')
+        else if (isLightOrAuto && !html.classList.contains('light'))
+            html.classList.add('light')
+    </script>
+
+<!--    clipboard script-->
+    <script>
+        // INITIALIZATION OF CLIPBOARD
+        // =======================================================
+        ;(function () {
+            window.addEventListener('load', () => {
+                const $clipboards = document.querySelectorAll(
+                    '.js-clipboard-example'
+                )
+                $clipboards.forEach((el) => {
+                    const isToggleTooltip =
+                        HSStaticMethods.getClassProperty(
+                            el,
+                            '--is-toggle-tooltip'
+                        ) === 'false'
+                            ? false
+                            : true
+                    const clipboard = new ClipboardJS(el, {
+                        text: (trigger) => {
+                            const clipboardText = trigger.dataset.clipboardText
+                            if (clipboardText) return clipboardText
+                            const clipboardTarget =
+                                trigger.dataset.clipboardTarget
+                            const $element =
+                                document.querySelector(clipboardTarget)
+                            if (
+                                $element.tagName === 'SELECT' ||
+                                $element.tagName === 'INPUT' ||
+                                $element.tagName === 'TEXTAREA'
+                            )
+                                return $element.value
+                            else return $element.textContent
+                        },
+                    })
+                    clipboard.on('success', () => {
+                        const $default = el.querySelector(
+                            '.js-clipboard-default'
+                        )
+                        const $success = el.querySelector(
+                            '.js-clipboard-success'
+                        )
+                        const $successText = el.querySelector(
+                            '.js-clipboard-success-text'
+                        )
+                        const successText =
+                            el.dataset.clipboardSuccessText || ''
+                        const tooltip = el.closest('.hs-tooltip')
+                        const $tooltip = HSTooltip.getInstance(tooltip, true)
+                        let oldSuccessText
+                        if ($successText) {
+                            oldSuccessText = $successText.textContent
+                            $successText.textContent = successText
+                        }
+                        if ($default && $success) {
+                            $default.classList.remove('block')
+                            $default.classList.add('hidden')
+
+                            $success.classList.add('block')
+                            $success.classList.remove('hidden')
+                        }
+                        if (tooltip && isToggleTooltip) HSTooltip.show(tooltip)
+                        if (tooltip && !isToggleTooltip)
+                            $tooltip.element.popperInstance.update()
+                        setTimeout(function () {
+                            if ($successText && oldSuccessText)
+                                $successText.textContent = oldSuccessText
+                            if (tooltip && isToggleTooltip)
+                                HSTooltip.hide(tooltip)
+                            if (tooltip && !isToggleTooltip)
+                                $tooltip.element.popperInstance.update()
+                            if ($default && $success) {
+                                $default.classList.remove('hidden')
+                                $default.classList.add('block')
+
+                                $success.classList.add('hidden')
+                                $success.classList.remove('block')
+                            }
+                        }, 2000)
+                    })
+                })
+            })
+        })()
+    </script>
+
+<!--    tabs script-->
+    <script>
+        const tabs = document.querySelectorAll('.tab')
+        const tabItems = document.querySelectorAll('.tab-item')
+
+        tabs.forEach((tab) => {
+            tab.addEventListener('click', () => {
+                tabs.forEach((ntab) => {
+                    ntab.classList.remove('tab-active')
+                })
+                tab.classList.add('tab-active')
+
+                const targetTabId = tab.getAttribute('data-tab')
+
+                tabItems.forEach(item => {
+                    if (item.id === targetTabId) {
+                        item.classList.remove('hidden')
+                        item.classList.add('tab-item-active')
+                    } else {
+                        item.classList.remove('tab-item-active')
+                        item.classList.add('hidden')
+                    }
+                })
+            })
+        })
+    </script>
+
+
+<!--    ethers init script-->
+    <script type="module">
+        import {
+            Contract,
+            getDefaultProvider,
+            Wallet,
+            keccak256,
+            toUtf8Bytes,
+            BrowserProvider
+        } from 'https://cdnjs.cloudflare.com/ajax/libs/ethers/6.12.1/ethers.min.js'
+
+        const abi = [
+            'constructor(address _otherParty, uint256 _amount) payable',
+            'function amount() view returns (uint256)',
+            'function confirmSwap(string _key)',
+            'function deadline() view returns (uint256)',
+            'function deposit(bytes32 _hashKey, uint256 _deadline, bool _flag) payable',
+            'function hashKey() view returns (bytes32)',
+            'function key() view returns (string)',
+            'function myAddr() view returns (address)',
+            'function otherParty() view returns (address)',
+            'function owner() view returns (address)',
+            'function withdrawal()',
+        ]
+        // const privateKey =
+        //     '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
+        // const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
+        // const provider = getDefaultProvider('http://localhost:8545/')
+        // const signer = new Wallet(privateKey, provider)
+        // const contract = new Contract(contractAddress, abi, signer)
+
+        let contractAddress;
+        let provider, signer, contract;
+
+        const key_content = document.getElementById('key-content')
+        const key_full = document.getElementById('key-full')
+        const deadline_content = document.getElementById('deadline-content')
+        const owner_content = document.getElementById('owner-content')
+        const owner_full = document.getElementById('owner-full')
+        const other_party_content = document.getElementById('other-party-content')
+        const other_party_full = document.getElementById('other-party-full')
+        const hash_key_content = document.getElementById('hash-key-content')
+        const hash_key_full = document.getElementById('hash-key-full')
+
+        const setInfo = async () => {
+            const deadline = await contract.deadline();
+            const date = new Date(Number(deadline));
+            deadline_content.innerHTML = date.toDateString()
+
+            key_content.innerHTML = shortenAddress(await contract.key())
+            key_full.innerHTML = await contract.key()
+            owner_content.innerHTML = shortenAddress(await contract.owner())
+            owner_full.innerHTML = await contract.owner()
+            other_party_content.innerHTML = shortenAddress(await contract.otherParty())
+            other_party_full.innerHTML = await contract.otherParty()
+            hash_key_content.innerHTML = shortenAddress(await contract.hashKey())
+            hash_key_full.innerHTML = await contract.hashKey()
+        }
+        // setInfo()
+
+        // forward only
+        const getContractAddress = () => {
+            const element = document.getElementById("btn");
+            if (element) {
+                element.click();
+
+                setTimeout(() => {
+                    contractAddress = document.getElementById(
+                        "form-output-myAddr-0"
+                    ).innerHTML;
+                    console.log('contract address: ', contractAddress)
+                }, 500);
+            }
+        }
+
+        const initApp = async () => {
+            if (window.parent.ethereum == null) {
+                console.log("MetaMask not installed; using read-only defaults")
+                provider = getDefaultProvider()
+
+            } else {
+                provider = new BrowserProvider(window.parent.ethereum)
+
+                signer = await provider.getSigner();
+                contract = new Contract(contractAddress, abi, signer);
+            }
+        }
+
+        setTimeout(() => {
+            getContractAddress()
+        }, 500)
+
+        setTimeout(() => {
+            initApp().then(setInfo)
+        }, 1100)
+
+        const depositForm = document.getElementById('deposit-form')
+        const depositFormLoader = document.getElementById('deposit-form-loader')
+        depositForm.addEventListener('submit', async e => {
+            e.preventDefault()
+            depositFormLoader.classList.remove('hidden')
+
+            const formData = new FormData(depositForm)
+            const flag = formData.get('flag')
+            let hash_key = formData.get('hash-key')
+            let deadlineValue = formData.get('deadline');
+            let deadlineDate = new Date(deadlineValue);
+            deadlineDate.setHours(0, 0, 0, 0)
+            let currentDate = new Date();
+            currentDate.setHours(0, 0, 0, 0);
+            let futureDate = new Date(currentDate);
+            futureDate.setDate(futureDate.getDate() + 1);
+
+            if (!hash_key || !deadlineValue) {
+                showToast('Please fill all fields!', 'error')
+                return
+            }
+
+            if (deadlineDate < futureDate) {
+                showToast('The deadline should start no earlier than tomorrow!', 'info');
+                return
+            }
+
+            if (flag) {
+                hash_key = keccak256(toUtf8Bytes(hash_key));
+                console.log(hash_key);
+            }
+
+            try {
+                const amount = await contract.amount()
+                await contract.deposit(hash_key, deadlineDate.getTime(), flag, {value: amount})
+                showToast('Success deposit!', 'success')
+                depositForm.reset()
+            } catch (error) {
+                console.log(error)
+                showToast('Error deposit!', 'error')
+            } finally {
+                depositFormLoader.classList.add('hidden')
+            }
+        })
+
+        const withdrawButton = document.getElementById('withdraw-button')
+        const withdrawFormLoader = document.getElementById('withdraw-form-loader')
+        withdrawButton.addEventListener('click', async () => {
+            withdrawFormLoader.classList.remove('hidden')
+            try {
+                await contract.withdrawal();
+                showToast('Success withdraw all!', 'success')
+            } catch (error) {
+                console.log(error)
+                showToast('Error withdraw all!', 'error')
+            } finally {
+                withdrawFormLoader.classList.add('hidden')
+            }
+        })
+    </script>
+</body>

@@ -17,8 +17,15 @@ Atomic swaps, or cross-chain swaps, allow two parties to exchange assets directl
 
 Explore the capabilities of AtomicSwaps through our live demos:
 
-1. [User Interface](https://moretech-forward.github.io/AtomicSwaps-frontend/client/src/index.html) - Explore the user experience.
-2. [Administration Panel](https://moretech-forward.github.io/AtomicSwaps-frontend/admin/src/index.html) - Access administrative controls.
+## Native
+
+1. [User Interface](https://moretech-forward.github.io/AtomicSwaps-frontend/Native/client/src/index.html) - Explore the user experience.
+2. [Administration Panel](https://moretech-forward.github.io/AtomicSwaps-frontend/Native/admin/src/index.html) - Access administrative controls.
+
+## ERC20
+
+1. [User Interface](https://moretech-forward.github.io/AtomicSwaps-frontend/ERC20/client/src/index.html) - Explore the user experience.
+2. [Administration Panel](https://moretech-forward.github.io/AtomicSwaps-frontend/ERC20/admin/src/index.html) - Access administrative controls.
 
 # Feedback
 

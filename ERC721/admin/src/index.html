@@ -130,7 +130,7 @@
                 </svg>
             </button>
         </div>
-        <p class="text-2xl text-center">Atomic Swaps (ERC20) - Admin</p>
+        <p class="text-2xl text-center">Atomic Swaps (ERC721) - Admin</p>
         <br />
         <div>
             <button
@@ -253,8 +253,28 @@
                         <p
                             class="mt-2 text-sm text-gray-500 dark:text-neutral-500"
                         >
-                            Enter the address of the ERC20 token you want to
+                            Enter the address of the ERC721 token you want to
                             exchange.
+                        </p>
+                    </div>
+                    <div>
+                        <label
+                            class="block mb-2 text-sm font-medium dark:text-white"
+                            for="token-id"
+                            >Token ID</label
+                        >
+                        <input
+                            aria-describedby="hs-input-helper-text"
+                            class="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                            id="token-id"
+                            name="token-id"
+                            placeholder="Type here ID"
+                            type="number"
+                        />
+                        <p
+                            class="mt-2 text-sm text-gray-500 dark:text-neutral-500"
+                        >
+                            Enter the ID of the token you want to swap.
                         </p>
                     </div>
                     <div>
@@ -276,26 +296,6 @@
                         >
                             Enter the address of the person who will be
                             confirming the swap.
-                        </p>
-                    </div>
-                    <div>
-                        <label
-                            class="block mb-2 text-sm font-medium dark:text-white"
-                            for="swap-amount"
-                            >Swap amount</label
-                        >
-                        <input
-                            aria-describedby="hs-input-helper-text"
-                            class="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                            id="swap-amount"
-                            name="swap-amount"
-                            placeholder="Type here amount"
-                            type="number"
-                        />
-                        <p
-                            class="mt-2 text-sm text-gray-500 dark:text-neutral-500"
-                        >
-                            Enter the amount of tokens you wish to swap.
                         </p>
                     </div>
                     <div>
@@ -447,12 +447,6 @@
                         </li>
                         <li>
                             <p class="flex items-center justify-between">
-                                <span>Amount: </span>
-                                <span id="amount-content">Loading...</span>
-                            </p>
-                        </li>
-                        <li>
-                            <p class="flex items-center justify-between">
                                 <span>Owner: </span>
                                 <span class="flex items-center">
                                     <button
@@ -510,7 +504,13 @@
                         <li>
                             <p class="flex items-center justify-between">
                                 <span>Asset: </span>
-                                <span>ERC20</span>
+                                <span>ERC721</span>
+                            </p>
+                        </li>
+                        <li>
+                            <p class="flex items-center justify-between">
+                                <span>Token ID: </span>
+                                <span id="token-id-content">Loading...</span>
                             </p>
                         </li>
                         <li>
@@ -994,13 +994,14 @@ ${message}
         } from 'https://cdnjs.cloudflare.com/ajax/libs/ethers/6.12.1/ethers.min.js'
 
         const abi = [
-            'function amount() view returns (uint256)',
             'function confirmSwap(string _key)',
-            'function createSwap(address _token, address _otherParty, uint256 _amount, bytes32 _hashKey, uint256 _deadline, bool _flag)',
+            'function createSwap(address _token, address _otherParty, uint256 _id, bytes32 _hashKey, uint256 _deadline, bool _flag)',
             'function deadline() view returns (uint256)',
             'function hashKey() view returns (bytes32)',
+            'function id() view returns (uint256)',
             'function key() view returns (string)',
             'function myAddr() view returns (address)',
+            'function onERC721Received(address, address, uint256, bytes) returns (bytes4)',
             'function otherParty() view returns (address)',
             'function owner() view returns (address)',
             'function token() view returns (address)',
@@ -1009,13 +1010,10 @@ ${message}
         ]
 
         const tokenAbi = [
-            'function approve(address spender, uint256 value) returns (bool)',
-            'function balanceOf(address account) view returns (uint256)',
-            'function decimals() view returns (uint8)',
-            'function name() view returns (string)',
-            'function symbol() view returns (string)',
-            'function transfer(address to, uint256 value) returns (bool)',
-            'function transferFrom(address from, address to, uint256 value) returns (bool)',
+            'function approve(address to, uint256 tokenId)',
+            'function balanceOf(address owner) view returns (uint256)',
+            'function ownerOf(uint256 tokenId) view returns (address)',
+            'function tokenURI(uint256 tokenId) view returns (string)',
         ]
 
         let contractAddress
@@ -1026,7 +1024,7 @@ ${message}
         const key_content = document.getElementById('key-content')
         const key_full = document.getElementById('key-full')
         const deadline_content = document.getElementById('deadline-content')
-        const amount_content = document.getElementById('amount-content')
+        const token_id_content = document.getElementById('token-id-content')
         const owner_content = document.getElementById('owner-content')
         const owner_full = document.getElementById('owner-full')
         const other_party_content = document.getElementById(
@@ -1035,6 +1033,7 @@ ${message}
         const erc20_token_content = document.getElementById(
             'erc20-token-content'
         )
+
         const other_party_full = document.getElementById('other-party-full')
         const hash_key_content = document.getElementById('hash-key-content')
         const hash_key_full = document.getElementById('hash-key-full')
@@ -1054,7 +1053,8 @@ ${message}
                 can_swap_content.style.color = 'red'
             }
 
-            amount_content.innerHTML = formatEther(await contract.amount())
+            token_id_content.innerHTML = await contract.id()
+
             key_content.innerHTML = shortenAddress(await contract.key())
             key_full.innerHTML = await contract.key()
             owner_content.innerHTML = shortenAddress(await contract.owner())
@@ -1137,10 +1137,10 @@ ${message}
             const formData = new FormData(depositForm)
             const flag = formData.get('flag')
             const otherParty = formData.get('other-party')
-            const swapAmount = formData.get('swap-amount')
             let hash_key = formData.get('hash-key')
             const deadlineValue = formData.get('deadline')
             const token = formData.get('token-addr')
+            const id = formData.get('token-id')
 
             let deadlineDate = new Date(deadlineValue)
             deadlineDate.setHours(0, 0, 0, 0)
@@ -1149,13 +1149,7 @@ ${message}
             let futureDate = new Date(currentDate)
             futureDate.setDate(futureDate.getDate() + 1)
 
-            if (
-                !hash_key ||
-                !deadlineValue ||
-                !otherParty ||
-                !swapAmount ||
-                !token
-            ) {
+            if (!hash_key || !deadlineValue || !otherParty || !id || !token) {
                 showToast('Please fill all fields!', 'error')
                 return
             }
@@ -1181,21 +1175,22 @@ ${message}
                 // Create swap
                 console.log(token)
                 const tokenContract = new Contract(token, tokenAbi, signer)
-                const tx = await tokenContract.approve(
-                    contractAddress,
-                    swapAmount
-                )
+                let tx = await tokenContract.approve(contractAddress, id)
 
-                await tx.wait()
+                const r = await tx.wait()
 
-                await contract.createSwap(
+                console.log(r)
+
+                tx = await contract.createSwap(
                     token,
                     otherParty,
-                    swapAmount,
+                    id,
                     hash_key,
                     deadline,
                     flag
                 )
+
+                await tx.wait()
 
                 showToast('The swap was successful!', 'success')
                 depositForm.reset()
@@ -1215,7 +1210,8 @@ ${message}
         withdrawButton.addEventListener('click', async () => {
             withdrawFormLoader.classList.remove('hidden')
             try {
-                await contract.withdrawal()
+                const tx = await contract.withdrawal()
+                await tx.wait()
                 showToast('Success withdraw all!', 'success')
             } catch (error) {
                 console.log(error)

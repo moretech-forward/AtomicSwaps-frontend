@@ -130,7 +130,7 @@
                 </svg>
             </button>
         </div>
-        <p class="text-2xl text-center">Atomic Swaps (ERC20) - Client</p>
+        <p class="text-2xl text-center">Atomic Swaps (ERC1155) - Client</p>
         <br />
         <div>
             <button
@@ -313,7 +313,13 @@
                 <li>
                     <p class="flex items-center justify-between">
                         <span>Asset: </span>
-                        <span>Native</span>
+                        <span>ERC1155</span>
+                    </p>
+                </li>
+                <li>
+                    <p class="flex items-center justify-between">
+                        <span>Token ID: </span>
+                        <span id="token-id-content">Loading...</span>
                     </p>
                 </li>
                 <li>
@@ -764,17 +770,20 @@ ${message}
         } from 'https://cdnjs.cloudflare.com/ajax/libs/ethers/6.12.1/ethers.min.js'
 
         const abi = [
-            'function amount() view returns (uint256)',
             'function confirmSwap(string _key)',
-            'function createSwap(address _token, address _otherParty, uint256 _amount, bytes32 _hashKey, uint256 _deadline, bool _flag)',
+            'function createSwap(address _token, address _otherParty, uint256 _value, uint256 _id, bytes32 _hashKey, uint256 _deadline, bool _flag)',
             'function deadline() view returns (uint256)',
             'function hashKey() view returns (bytes32)',
+            'function id() view returns (uint256)',
             'function key() view returns (string)',
             'function myAddr() view returns (address)',
+            'function onERC1155BatchReceived(address, address, uint256[], uint256[], bytes) returns (bytes4)',
+            'function onERC1155Received(address, address, uint256, uint256, bytes) returns (bytes4)',
             'function otherParty() view returns (address)',
             'function owner() view returns (address)',
             'function token() view returns (address)',
             'function transferOwnership(address newOwner)',
+            'function value() view returns (uint256)',
             'function withdrawal()',
         ]
 
@@ -785,6 +794,7 @@ ${message}
         const key_full = document.getElementById('key-full')
         const deadline_content = document.getElementById('deadline-content')
         const amount_content = document.getElementById('amount-content')
+        const id_content = document.getElementById('token-id-content')
         const owner_content = document.getElementById('owner-content')
         const owner_full = document.getElementById('owner-full')
         const other_party_content = document.getElementById(
@@ -805,7 +815,9 @@ ${message}
                 deadline_content.innerHTML = date.toDateString() + ' 23:59'
             }
 
-            amount_content.innerHTML = formatEther(await contract.amount())
+            id_content.innerHTML = await contract.id()
+
+            amount_content.innerHTML = await contract.value()
             key_content.innerHTML = shortenAddress(await contract.key())
             key_full.innerHTML = await contract.key()
             owner_content.innerHTML = shortenAddress(await contract.owner())
@@ -895,7 +907,8 @@ ${message}
             }
 
             try {
-                await contract.confirmSwap(key)
+                let tx = await contract.confirmSwap(key)
+                await tx.wait()
                 showToast('Success Confirm Swap!', 'success')
                 form.reset()
             } catch (err) {

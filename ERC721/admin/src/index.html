@@ -130,7 +130,7 @@
                 </svg>
             </button>
         </div>
-        <p class="text-2xl text-center">Atomic Swaps (ERC721) - Admin</p>
+        <p class="text-2xl text-center">Atomic Swaps (ERC20) - Admin</p>
         <br />
         <div>
             <button
@@ -235,6 +235,27 @@
                         >
                             i am the initiator of the swap</label
                         >
+                    </div>
+                    <div>
+                        <label
+                            class="block mb-2 text-sm font-medium dark:text-white"
+                            for="token-addr"
+                            >Token address</label
+                        >
+                        <input
+                            aria-describedby="hs-input-helper-text"
+                            class="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                            id="token-addr"
+                            name="token-addr"
+                            placeholder="Type here address"
+                            type="text"
+                        />
+                        <p
+                            class="mt-2 text-sm text-gray-500 dark:text-neutral-500"
+                        >
+                            Enter the address of the ERC20 token you want to
+                            exchange.
+                        </p>
                     </div>
                     <div>
                         <label
@@ -489,7 +510,68 @@
                         <li>
                             <p class="flex items-center justify-between">
                                 <span>Asset: </span>
-                                <span>Native</span>
+                                <span>ERC20</span>
+                            </p>
+                        </li>
+                        <li>
+                            <p class="flex items-center justify-between">
+                                <span>Token: </span>
+                                <span class="flex items-center">
+                                    <button
+                                        class="inline-flex items-center mr-2 text-sm font-medium text-gray-800 shadow-sm js-clipboard-example disabled:opacity-50 disabled:pointer-events-none dark:text-white"
+                                        data-clipboard-action="copy"
+                                        data-clipboard-success-text="Copied"
+                                        data-clipboard-target="#erc20-token-full"
+                                        type="button"
+                                    >
+                                        <svg
+                                            class="transition js-clipboard-default size-4 group-hover:rotate-6"
+                                            fill="none"
+                                            height="24"
+                                            stroke="currentColor"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            viewBox="0 0 24 24"
+                                            width="24"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <rect
+                                                height="4"
+                                                rx="1"
+                                                ry="1"
+                                                width="8"
+                                                x="8"
+                                                y="2"
+                                            ></rect>
+                                            <path
+                                                d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                                            ></path></svg
+                                        ><svg
+                                            class="hidden text-blue-600 js-clipboard-success size-4"
+                                            fill="none"
+                                            height="24"
+                                            stroke="currentColor"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            viewBox="0 0 24 24"
+                                            width="24"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <polyline
+                                                points="20 6 9 17 4 12"
+                                            ></polyline>
+                                        </svg>
+                                    </button>
+                                    <span id="erc20-token-content">
+                                        Loading...</span
+                                    >
+                                    <span
+                                        id="erc20-token-full"
+                                        class="hidden"
+                                    ></span>
+                                </span>
                             </p>
                         </li>
                         <li>
@@ -914,16 +996,28 @@ ${message}
         const abi = [
             'function amount() view returns (uint256)',
             'function confirmSwap(string _key)',
-            'function createSwap(address _otherParty, uint256 _amount, bytes32 _hashKey, uint256 _deadline, bool _flag) payable',
+            'function createSwap(address _token, address _otherParty, uint256 _amount, bytes32 _hashKey, uint256 _deadline, bool _flag)',
             'function deadline() view returns (uint256)',
             'function hashKey() view returns (bytes32)',
             'function key() view returns (string)',
             'function myAddr() view returns (address)',
             'function otherParty() view returns (address)',
             'function owner() view returns (address)',
+            'function token() view returns (address)',
             'function transferOwnership(address newOwner)',
             'function withdrawal()',
         ]
+
+        const tokenAbi = [
+            'function approve(address spender, uint256 value) returns (bool)',
+            'function balanceOf(address account) view returns (uint256)',
+            'function decimals() view returns (uint8)',
+            'function name() view returns (string)',
+            'function symbol() view returns (string)',
+            'function transfer(address to, uint256 value) returns (bool)',
+            'function transferFrom(address from, address to, uint256 value) returns (bool)',
+        ]
+
         let contractAddress
         let provider, signer, contract
 
@@ -938,9 +1032,13 @@ ${message}
         const other_party_content = document.getElementById(
             'other-party-content'
         )
+        const erc20_token_content = document.getElementById(
+            'erc20-token-content'
+        )
         const other_party_full = document.getElementById('other-party-full')
         const hash_key_content = document.getElementById('hash-key-content')
         const hash_key_full = document.getElementById('hash-key-full')
+        const erc20_token_full = document.getElementById('erc20-token-full')
 
         const setInfo = async () => {
             const deadline = await contract.deadline()
@@ -964,16 +1062,30 @@ ${message}
             other_party_content.innerHTML = shortenAddress(
                 await contract.otherParty()
             )
+            erc20_token_full.innerHTML = await contract.token()
+            erc20_token_content.innerHTML = shortenAddress(
+                await contract.token()
+            )
             other_party_full.innerHTML = await contract.otherParty()
             hash_key_content.innerHTML = shortenAddress(
                 await contract.hashKey()
             )
             hash_key_full.innerHTML = await contract.hashKey()
         }
+
+        function extractErrorReason(errorMessage) {
+            const regex = /reason="([^"]+)"/
+            const match = errorMessage.toString().match(regex)
+            if (match && match[1]) {
+                return match[1]
+            }
+            return null
+        }
+
         // test chain
         const privateKey =
             '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
-        contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
+        contractAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
         provider = getDefaultProvider('http://localhost:8545/')
         signer = new Wallet(privateKey, provider)
         contract = new Contract(contractAddress, abi, signer)
@@ -1028,6 +1140,7 @@ ${message}
             const swapAmount = formData.get('swap-amount')
             let hash_key = formData.get('hash-key')
             const deadlineValue = formData.get('deadline')
+            const token = formData.get('token-addr')
 
             let deadlineDate = new Date(deadlineValue)
             deadlineDate.setHours(0, 0, 0, 0)
@@ -1036,7 +1149,13 @@ ${message}
             let futureDate = new Date(currentDate)
             futureDate.setDate(futureDate.getDate() + 1)
 
-            if (!hash_key || !deadlineValue || !otherParty || !swapAmount) {
+            if (
+                !hash_key ||
+                !deadlineValue ||
+                !otherParty ||
+                !swapAmount ||
+                !token
+            ) {
                 showToast('Please fill all fields!', 'error')
                 return
             }
@@ -1060,16 +1179,22 @@ ${message}
 
                 console.log(deadline)
                 // Create swap
+                console.log(token)
+                const tokenContract = new Contract(token, tokenAbi, signer)
+                const tx = await tokenContract.approve(
+                    contractAddress,
+                    swapAmount
+                )
+
+                await tx.wait()
 
                 await contract.createSwap(
+                    token,
                     otherParty,
                     swapAmount,
                     hash_key,
                     deadline,
-                    flag,
-                    {
-                        value: swapAmount,
-                    }
+                    flag
                 )
 
                 showToast('The swap was successful!', 'success')
@@ -1094,7 +1219,9 @@ ${message}
                 showToast('Success withdraw all!', 'success')
             } catch (error) {
                 console.log(error)
-                showToast('Error withdraw all!', 'error')
+                const reason = extractErrorReason(error)
+                console.log(reason)
+                showToast('Error withdraw all! ' + reason + '.', 'error')
             } finally {
                 withdrawFormLoader.classList.add('hidden')
             }

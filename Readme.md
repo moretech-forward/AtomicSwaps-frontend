@@ -27,6 +27,16 @@ Explore the capabilities of AtomicSwaps through our live demos:
 1. [User Interface](https://moretech-forward.github.io/AtomicSwaps-frontend/ERC20/client/src/index.html) - Explore the user experience.
 2. [Administration Panel](https://moretech-forward.github.io/AtomicSwaps-frontend/ERC20/admin/src/index.html) - Access administrative controls.
 
+## ERC721
+
+1. [User Interface](https://moretech-forward.github.io/AtomicSwaps-frontend/ERC721/client/src/index.html) - Explore the user experience.
+2. [Administration Panel](https://moretech-forward.github.io/AtomicSwaps-frontend/ERC721/admin/src/index.html) - Access administrative controls.
+
+## ERC1155
+
+1. [User Interface](https://moretech-forward.github.io/AtomicSwaps-frontend/ERC1155/client/src/index.html) - Explore the user experience.
+2. [Administration Panel](https://moretech-forward.github.io/AtomicSwaps-frontend/ERC1155/admin/src/index.html) - Access administrative controls.
+
 # Feedback
 
 We value your feedback! Please leave your reviews and suggestions on our [Google Docs](https://docs.google.com/document/d/1637JnxBsmmEwFPQSUm18s4T657HH2hAJrieDVScVb8A/edit?usp=sharing).

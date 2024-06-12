@@ -130,7 +130,54 @@
                 </svg>
             </button>
         </div>
-        <p class="text-2xl text-center">Atomic Swaps - Client</p>
+        <p class="text-2xl text-center">Atomic Swaps (Native) - Client</p>
+        <br />
+        <div>
+            <button
+                class="relative z-10 px-3 py-2 text-xs font-medium text-gray-800 transition duration-200 border border-gray-400 rounded-md md:text-sm hover:border-gray-400 dark:text-neutral-200 dark:hover:text-white dark:border-neutral-500 dark:hover:border-neutral-500"
+                type="button"
+                onclick="my_modal_1.showModal()"
+            >
+                Read info
+            </button>
+            <dialog
+                class="relative bg-white rounded-lg shadow dark:bg-gray-700"
+                id="my_modal_1"
+            >
+                <div
+                    class="relative flex flex-col gap-4 p-4 bg-white border border-gray-200 shadow-sm rounded-xl md:p-5 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400"
+                >
+                    <b class="text-xl text-gray-100 dark:text-dark">
+                        Information about cient panel functions!
+                    </b>
+
+                    <p class="py-4">
+                        Allows you to confirm the swap
+
+                        <li>
+                            First the swap initiator enters the key to unlock
+                            the funds in the contract
+                        </li>
+                        <li>
+                            then the key will be displayed in the admin
+                            interface and the other partsy to the swap will be
+                            able to confirm the swap and unlock the funds.
+                        </li>
+                    </p>
+
+                    <div class="modal-action">
+                        <form method="dialog">
+                            <!-- if there is a button in form, it will close the modal -->
+                            <button
+                                class="relative z-10 px-3 py-2 text-xs font-medium text-gray-800 transition duration-200 border border-gray-400 rounded-md md:text-sm hover:border-gray-400 dark:text-neutral-200 dark:hover:text-white dark:border-neutral-500 dark:hover:border-neutral-500"
+                            >
+                                Close
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </dialog>
+        </div>
         <form
             id="form"
             class="relative mt-6 flex flex-col p-4 bg-white border border-gray-200 shadow-sm rounded-xl md:p-5 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 w-96"
@@ -203,6 +250,12 @@
                 </li>
                 <li>
                     <p class="flex items-center justify-between">
+                        <span>Amount: </span>
+                        <span id="amount-content">Loading...</span>
+                    </p>
+                </li>
+                <li>
+                    <p class="flex items-center justify-between">
                         <span>Owner: </span>
                         <span class="flex items-center">
                             <button
@@ -255,6 +308,12 @@
                             <span id="owner-content"> Loading... </span>
                             <span class="hidden" id="owner-full"></span>
                         </span>
+                    </p>
+                </li>
+                <li>
+                    <p class="flex items-center justify-between">
+                        <span>Asset: </span>
+                        <span>Native</span>
                     </p>
                 </li>
                 <li>
@@ -531,8 +590,8 @@ ${message}
         }
 
         function shortenAddress(address) {
-            if (address.length < 10) return address // Если адрес слишком короткий, возвращаем его как есть
-            return address.slice(0, 6) + '...' + address.slice(-5) // Возвращаем сокращенный адрес
+            if (address.length < 10) return address
+            return address.slice(0, 6) + '...' + address.slice(-5)
         }
 
         const html = document.querySelector('html')
@@ -644,19 +703,21 @@ ${message}
             Contract,
             getDefaultProvider,
             BrowserProvider,
+            Wallet,
+            formatEther,
         } from 'https://cdnjs.cloudflare.com/ajax/libs/ethers/6.12.1/ethers.min.js'
 
         const abi = [
-            'constructor(address _otherParty, uint256 _amount) payable',
             'function amount() view returns (uint256)',
             'function confirmSwap(string _key)',
+            'function createSwap(address _otherParty, uint256 _amount, bytes32 _hashKey, uint256 _deadline, bool _flag) payable',
             'function deadline() view returns (uint256)',
-            'function deposit(bytes32 _hashKey, uint256 _deadline, bool _flag) payable',
             'function hashKey() view returns (bytes32)',
             'function key() view returns (string)',
             'function myAddr() view returns (address)',
             'function otherParty() view returns (address)',
             'function owner() view returns (address)',
+            'function transferOwnership(address newOwner)',
             'function withdrawal()',
         ]
 
@@ -666,6 +727,7 @@ ${message}
         const key_content = document.getElementById('key-content')
         const key_full = document.getElementById('key-full')
         const deadline_content = document.getElementById('deadline-content')
+        const amount_content = document.getElementById('amount-content')
         const owner_content = document.getElementById('owner-content')
         const owner_full = document.getElementById('owner-full')
         const other_party_content = document.getElementById(
@@ -677,10 +739,14 @@ ${message}
 
         const setInfo = async () => {
             const deadline = await contract.deadline()
-            const date = new Date(Number(deadline))
+            if (deadline === 0n) {
+                deadline_content.innerHTML = "There's no deadline"
+            } else {
+                const date = new Date(Number(deadline * 1000n))
+                deadline_content.innerHTML = date.toDateString() + ' 23:59'
+            }
 
-            deadline_content.innerHTML = date.toDateString()
-
+            amount_content.innerHTML = formatEther(await contract.amount())
             key_content.innerHTML = shortenAddress(await contract.key())
             key_full.innerHTML = await contract.key()
             owner_content.innerHTML = shortenAddress(await contract.owner())
@@ -694,6 +760,16 @@ ${message}
             )
             hash_key_full.innerHTML = await contract.hashKey()
         }
+
+        // test chain
+        const privateKey =
+            '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
+        contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
+        provider = getDefaultProvider('http://localhost:8545/')
+        signer = new Wallet(privateKey, provider)
+        contract = new Contract(contractAddress, abi, signer)
+        setInfo()
+        // test chain
 
         const getContractAddress = () => {
             const button = document.getElementById('btn')
@@ -722,10 +798,10 @@ ${message}
         }
 
         setTimeout(() => {
-            getContractAddress()
+            // getContractAddress()
         }, 500)
         setTimeout(() => {
-            initApp().then(setInfo)
+            // initApp().then(setInfo)
         }, 1100)
 
         const form = document.getElementById('form')

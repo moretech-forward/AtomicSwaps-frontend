@@ -270,6 +270,7 @@
                             name="token-id"
                             placeholder="Type here ID"
                             type="number"
+                            min="0"
                         />
                         <p
                             class="mt-2 text-sm text-gray-500 dark:text-neutral-500"
@@ -311,6 +312,7 @@
                             name="swap-amount"
                             placeholder="Type here amount"
                             type="number"
+                            min="0"
                         />
                         <p
                             class="mt-2 text-sm text-gray-500 dark:text-neutral-500"
@@ -1112,13 +1114,13 @@ ${message}
         }
 
         // test chain
-        const privateKey =
-            '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
-        contractAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
-        provider = getDefaultProvider('http://localhost:8545/')
-        signer = new Wallet(privateKey, provider)
-        contract = new Contract(contractAddress, abi, signer)
-        setInfo()
+        // const privateKey =
+        //     '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
+        // contractAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
+        // provider = getDefaultProvider('http://localhost:8545/')
+        // signer = new Wallet(privateKey, provider)
+        // contract = new Contract(contractAddress, abi, signer)
+        // setInfo()
         // test chain
 
         // forward only
@@ -1148,13 +1150,15 @@ ${message}
             }
         }
 
+        // forward
         setTimeout(() => {
-            //getContractAddress()
+            getContractAddress()
         }, 500)
 
         setTimeout(() => {
-            //initApp().then(setInfo)
+            initApp().then(setInfo)
         }, 1100)
+        // forward
 
         const depositForm = document.getElementById('deposit-form')
         const depositFormLoader = document.getElementById('deposit-form-loader')
@@ -1164,7 +1168,7 @@ ${message}
 
             // get data Form
             const formData = new FormData(depositForm)
-            const flag = formData.get('flag')
+            let flag = formData.get('flag')
             const otherParty = formData.get('other-party')
             const swapAmount = formData.get('swap-amount')
             let hash_key = formData.get('hash-key')
@@ -1201,6 +1205,9 @@ ${message}
             if (flag) {
                 hash_key = keccak256(toUtf8Bytes(hash_key))
                 console.log(hash_key)
+                flag = true
+            } else {
+                flag = false
             }
 
             try {

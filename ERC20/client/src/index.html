@@ -833,13 +833,13 @@ ${message}
         }
 
         // test chain
-        const privateKey =
-            '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
-        contractAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
-        provider = getDefaultProvider('http://localhost:8545/')
-        signer = new Wallet(privateKey, provider)
-        contract = new Contract(contractAddress, abi, signer)
-        setInfo()
+        // const privateKey =
+        ;('0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80')
+        // contractAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
+        // provider = getDefaultProvider('http://localhost:8545/')
+        // signer = new Wallet(privateKey, provider)
+        // contract = new Contract(contractAddress, abi, signer)
+        // setInfo()
         // test chain
 
         const getContractAddress = () => {
@@ -868,12 +868,14 @@ ${message}
             }
         }
 
+        // forward
         setTimeout(() => {
-            // getContractAddress()
+            getContractAddress()
         }, 500)
         setTimeout(() => {
-            // initApp().then(setInfo)
+            initApp().then(setInfo)
         }, 1100)
+        // forward
 
         const form = document.getElementById('form')
         const formLoader = document.getElementById('form-loader')

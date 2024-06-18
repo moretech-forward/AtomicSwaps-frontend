@@ -753,6 +753,12 @@ ${message}
         })()
     </script>
 
+    <script>
+        function refreshPage() {
+            window.location.reload()
+        }
+    </script>
+
     <!--    ethers init script-->
     <script type="module">
         import {
@@ -913,6 +919,9 @@ ${message}
                 else showToast('Error confirm swap!', 'error')
             } finally {
                 formLoader.classList.add('hidden')
+                setTimeout(() => {
+                    refreshPage()
+                }, 3100)
             }
         })
     </script>

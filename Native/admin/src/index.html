@@ -901,6 +901,12 @@ ${message}
         })
     </script>
 
+    <script>
+        function refreshPage() {
+            window.location.reload()
+        }
+    </script>
+
     <!--    ethers init script-->
     <script type="module">
         import {
@@ -912,6 +918,7 @@ ${message}
             BrowserProvider,
             formatEther,
             parseEther,
+            isBytesLike,
         } from 'https://cdnjs.cloudflare.com/ajax/libs/ethers/6.12.1/ethers.min.js'
 
         const abi = [
@@ -983,7 +990,6 @@ ${message}
         // setInfo()
         // test chain
 
-        // forward only
         const getContractAddress = () => {
             const element = document.getElementById('btn')
             if (element) {
@@ -1010,6 +1016,7 @@ ${message}
             }
         }
 
+        // forward
         setTimeout(() => {
             getContractAddress()
         }, 500)
@@ -1017,6 +1024,7 @@ ${message}
         setTimeout(() => {
             initApp().then(setInfo)
         }, 1100)
+        // forward
 
         const depositForm = document.getElementById('deposit-form')
         const depositFormLoader = document.getElementById('deposit-form-loader')
@@ -1041,6 +1049,7 @@ ${message}
 
             if (!hash_key || !deadlineValue || !otherParty || !swapAmount) {
                 showToast('Please fill all fields!', 'error')
+                depositFormLoader.classList.add('hidden')
                 return
             }
 
@@ -1049,6 +1058,7 @@ ${message}
                     'The deadline should start no earlier than tomorrow!',
                     'info'
                 )
+                depositFormLoader.classList.add('hidden')
                 return
             }
 
@@ -1058,6 +1068,14 @@ ${message}
                 flag = true
             } else {
                 flag = false
+                if (!isBytesLike(hash_key)) {
+                    showToast(
+                        'Wrong key, you need to get a key in the format "0x..."!',
+                        'error'
+                    )
+                    depositFormLoader.classList.add('hidden')
+                    return
+                }
             }
 
             console.log(flag)
@@ -1067,7 +1085,7 @@ ${message}
                     Math.floor(deadlineDate.getTime() / 1000) + 86340
 
                 // Create swap
-                await contract.createSwap(
+                const tx = await contract.createSwap(
                     otherParty,
                     parseEther(swapAmount),
                     hash_key,
@@ -1078,6 +1096,8 @@ ${message}
                     }
                 )
 
+                await tx.wait()
+
                 showToast('The swap was successful!', 'success')
                 depositForm.reset()
             } catch (error) {
@@ -1086,6 +1106,9 @@ ${message}
                 showToast('Failed to create a swap!', 'error')
             } finally {
                 depositFormLoader.classList.add('hidden')
+                setTimeout(() => {
+                    refreshPage()
+                }, 1100)
             }
         })
 
@@ -1096,13 +1119,17 @@ ${message}
         withdrawButton.addEventListener('click', async () => {
             withdrawFormLoader.classList.remove('hidden')
             try {
-                await contract.withdrawal()
+                const tx = await contract.withdrawal()
+                await tx.wait()
                 showToast('Success withdraw all!', 'success')
             } catch (error) {
                 console.log(error)
                 showToast('Error withdraw all!', 'error')
             } finally {
                 withdrawFormLoader.classList.add('hidden')
+                setTimeout(() => {
+                    refreshPage()
+                }, 1100)
             }
         })
     </script>

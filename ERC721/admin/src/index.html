@@ -982,6 +982,12 @@ ${message}
         })
     </script>
 
+    <script>
+        function refreshPage() {
+            window.location.reload()
+        }
+    </script>
+
     <!--    ethers init script-->
     <script type="module">
         import {
@@ -992,6 +998,7 @@ ${message}
             toUtf8Bytes,
             BrowserProvider,
             formatEther,
+            isBytesLike,
         } from 'https://cdnjs.cloudflare.com/ajax/libs/ethers/6.12.1/ethers.min.js'
 
         const abi = [
@@ -1153,6 +1160,7 @@ ${message}
 
             if (!hash_key || !deadlineValue || !otherParty || !id || !token) {
                 showToast('Please fill all fields!', 'error')
+                depositFormLoader.classList.add('hidden')
                 return
             }
 
@@ -1161,6 +1169,7 @@ ${message}
                     'The deadline should start no earlier than tomorrow!',
                     'info'
                 )
+                depositFormLoader.classList.add('hidden')
                 return
             }
 
@@ -1170,6 +1179,14 @@ ${message}
                 flag = true
             } else {
                 flag = false
+                if (!isBytesLike(hash_key)) {
+                    showToast(
+                        'Wrong key, you need to get a key in the format "0x...."!',
+                        'error'
+                    )
+                    depositFormLoader.classList.add('hidden')
+                    return
+                }
             }
 
             try {
@@ -1205,6 +1222,9 @@ ${message}
                 showToast('Failed to create a swap!', 'error')
             } finally {
                 depositFormLoader.classList.add('hidden')
+                setTimeout(() => {
+                    refreshPage()
+                }, 1100)
             }
         })
 
@@ -1225,6 +1245,9 @@ ${message}
                 showToast('Error withdraw all! ' + reason + '.', 'error')
             } finally {
                 withdrawFormLoader.classList.add('hidden')
+                setTimeout(() => {
+                    refreshPage()
+                }, 1100)
             }
         })
     </script>

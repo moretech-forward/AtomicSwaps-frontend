@@ -900,16 +900,18 @@ ${message}
 
             if (!key || key === '') {
                 showToast('Key field is required!', 'error')
+                formLoader.classList.add('hidden')
                 return
             }
 
             if (!contract) {
                 showToast('Contract not connected', 'error')
+                formLoader.classList.add('hidden')
                 return
             }
 
             try {
-                let tx = await contract.confirmSwap(key)
+                const tx = await contract.confirmSwap(key)
                 await tx.wait()
                 showToast('Success Confirm Swap!', 'success')
                 form.reset()

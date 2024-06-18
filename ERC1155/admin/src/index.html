@@ -1240,6 +1240,8 @@ ${message}
 
                 await tx.wait()
 
+                showToast('The approve was successful!', 'success')
+
                 tx = await contract.createSwap(
                     token,
                     otherParty,

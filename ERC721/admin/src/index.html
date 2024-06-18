@@ -510,6 +510,12 @@
                         </li>
                         <li>
                             <p class="flex items-center justify-between">
+                                <span>Token: </span>
+                                <span id="token-name-content">Loading...</span>
+                            </p>
+                        </li>
+                        <li>
+                            <p class="flex items-center justify-between">
                                 <span>Token ID: </span>
                                 <span id="token-id-content">Loading...</span>
                             </p>
@@ -1022,6 +1028,8 @@ ${message}
             'function balanceOf(address owner) view returns (uint256)',
             'function ownerOf(uint256 tokenId) view returns (address)',
             'function tokenURI(uint256 tokenId) view returns (string)',
+            'function name() view returns (string)',
+            'function symbol() view returns (string)',
         ]
 
         let contractAddress
@@ -1033,6 +1041,7 @@ ${message}
         const key_full = document.getElementById('key-full')
         const deadline_content = document.getElementById('deadline-content')
         const token_id_content = document.getElementById('token-id-content')
+        const token_name_content = document.getElementById('token-name-content')
         const owner_content = document.getElementById('owner-content')
         const owner_full = document.getElementById('owner-full')
         const other_party_content = document.getElementById(
@@ -1079,6 +1088,14 @@ ${message}
                 await contract.hashKey()
             )
             hash_key_full.innerHTML = await contract.hashKey()
+
+            // token-name-content
+            const token = await contract.token()
+            const tokenContract = new Contract(token, tokenAbi, signer)
+            const name = await tokenContract.name()
+            const symbol = await tokenContract.symbol()
+            const NameSymbol = name + ' ' + symbol
+            token_name_content.innerHTML = NameSymbol
         }
 
         function extractErrorReason(errorMessage) {
@@ -1200,6 +1217,8 @@ ${message}
                 let tx = await tokenContract.approve(contractAddress, id)
 
                 const r = await tx.wait()
+
+                showToast('The approve was successful!', 'success')
 
                 console.log(r)
 

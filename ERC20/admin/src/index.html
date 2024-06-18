@@ -1028,8 +1028,6 @@ ${message}
             'function decimals() view returns (uint8)',
             'function name() view returns (string)',
             'function symbol() view returns (string)',
-            'function transfer(address to, uint256 value) returns (bool)',
-            'function transferFrom(address from, address to, uint256 value) returns (bool)',
             'function allowance(address owner, address spender) view returns (uint256)',
         ]
 
@@ -1089,10 +1087,11 @@ ${message}
             hash_key_full.innerHTML = await contract.hashKey()
 
             // token-name-content
+            const token = await contract.token()
             const tokenContract = new Contract(token, tokenAbi, signer)
             const name = await tokenContract.name()
             const symbol = await tokenContract.symbol()
-            const NameSymbol = name + symbol
+            const NameSymbol = name + ' ' + symbol
             token_name_content.innerHTML = NameSymbol
         }
 
@@ -1252,6 +1251,8 @@ ${message}
                     )
 
                     await tx.wait()
+
+                    showToast('The approve was successful!', 'success')
                 }
 
                 const tx = await contract.createSwap(

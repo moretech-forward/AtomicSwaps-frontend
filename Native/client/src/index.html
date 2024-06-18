@@ -841,6 +841,16 @@ ${message}
             }
 
             try {
+                const deadline = await contract.deadline()
+                if (deadline === 0n) {
+                    showToast(
+                        "The swap is complete, there's nothing to comfirm",
+                        'error'
+                    )
+                    formLoader.classList.add('hidden')
+                    return
+                }
+
                 const tx = await contract.confirmSwap(key)
                 await tx.wait()
                 showToast('Success Confirm Swap!', 'success')

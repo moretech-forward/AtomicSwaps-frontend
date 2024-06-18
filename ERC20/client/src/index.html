@@ -790,6 +790,11 @@ ${message}
             'function withdrawal()',
         ]
 
+        const tokenAbi = [
+            'function name() view returns (string)',
+            'function symbol() view returns (string)',
+        ]
+
         let contractAddress
         let provider, signer, contract
 
@@ -836,10 +841,11 @@ ${message}
             hash_key_full.innerHTML = await contract.hashKey()
 
             // token-name-content
+            const token = await contract.token()
             const tokenContract = new Contract(token, tokenAbi, signer)
             const name = await tokenContract.name()
             const symbol = await tokenContract.symbol()
-            const NameSymbol = name + symbol
+            const NameSymbol = name + ' ' + symbol
             token_name_content.innerHTML = NameSymbol
         }
 
@@ -919,6 +925,16 @@ ${message}
             }
 
             try {
+                const deadline = await contract.deadline()
+                if (deadline === 0n) {
+                    showToast(
+                        "The swap is complete, there's nothing to comfirm",
+                        'error'
+                    )
+                    formLoader.classList.add('hidden')
+                    return
+                }
+
                 const tx = await contract.confirmSwap(key)
                 await tx.wait()
                 showToast('Success Confirm Swap!', 'success')

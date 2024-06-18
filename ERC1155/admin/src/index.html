@@ -1120,13 +1120,13 @@ ${message}
         }
 
         // test chain
-        const privateKey =
-            '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
-        contractAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
-        provider = getDefaultProvider('http://localhost:8545/')
-        signer = new Wallet(privateKey, provider)
-        contract = new Contract(contractAddress, abi, signer)
-        setInfo()
+        //const privateKey =
+        //    '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
+        //contractAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
+        //provider = getDefaultProvider('http://localhost:8545/')
+        //signer = new Wallet(privateKey, provider)
+        //contract = new Contract(contractAddress, abi, signer)
+        //setInfo()
         // test chain
 
         // forward only
@@ -1157,13 +1157,12 @@ ${message}
         }
 
         // forward
-        // setTimeout(() => {
-        //   getContractAddress()
-        //}, 500)
-
-        //   setTimeout(() => {
-        //    initApp().then(setInfo)
-        //   }, 1100)
+        setTimeout(() => {
+            getContractAddress()
+        }, 500)
+        setTimeout(() => {
+            initApp().then(setInfo)
+        }, 1100)
         // forward
 
         const depositForm = document.getElementById('deposit-form')
@@ -1258,7 +1257,14 @@ ${message}
             } catch (error) {
                 console.log(error)
 
-                showToast('Failed to create a swap!', 'error')
+                const reason = extractErrorReason(error)
+                console.log(reason)
+                if (!reason)
+                    showToast(
+                        'Failed to create a swap! ' + reason + '.',
+                        'error'
+                    )
+                else showToast('Failed to create a swap!', 'error')
             } finally {
                 depositFormLoader.classList.add('hidden')
                 setTimeout(() => {
@@ -1273,7 +1279,18 @@ ${message}
         )
         withdrawButton.addEventListener('click', async () => {
             withdrawFormLoader.classList.remove('hidden')
+
             try {
+                const deadline = await contract.deadline()
+                if (deadline === 0n) {
+                    showToast(
+                        "The swap is complete, there's nothing to withdraw",
+                        'error'
+                    )
+                    formLoader.classList.add('hidden')
+                    return
+                }
+
                 const tx = await contract.withdrawal()
                 await tx.wait()
                 showToast('Success withdraw all!', 'success')
@@ -1281,7 +1298,9 @@ ${message}
                 console.log(error)
                 const reason = extractErrorReason(error)
                 console.log(reason)
-                showToast('Error withdraw all! ' + reason + '.', 'error')
+                if (!reason)
+                    showToast('Error withdraw all! ' + reason + '.', 'error')
+                else showToast('Error withdraw all!', 'error')
             } finally {
                 withdrawFormLoader.classList.add('hidden')
                 setTimeout(() => {

@@ -256,6 +256,12 @@
                 </li>
                 <li>
                     <p class="flex items-center justify-between">
+                        <span>Token: </span>
+                        <span id="token-name-content">Loading...</span>
+                    </p>
+                </li>
+                <li>
+                    <p class="flex items-center justify-between">
                         <span>Owner: </span>
                         <span class="flex items-center">
                             <button
@@ -791,6 +797,7 @@ ${message}
         const key_full = document.getElementById('key-full')
         const deadline_content = document.getElementById('deadline-content')
         const amount_content = document.getElementById('amount-content')
+        const token_name_content = document.getElementById('token-name-content')
         const owner_content = document.getElementById('owner-content')
         const owner_full = document.getElementById('owner-full')
         const other_party_content = document.getElementById(
@@ -827,6 +834,13 @@ ${message}
                 await contract.hashKey()
             )
             hash_key_full.innerHTML = await contract.hashKey()
+
+            // token-name-content
+            const tokenContract = new Contract(token, tokenAbi, signer)
+            const name = await tokenContract.name()
+            const symbol = await tokenContract.symbol()
+            const NameSymbol = name + symbol
+            token_name_content.innerHTML = NameSymbol
         }
 
         function extractErrorReason(errorMessage) {
@@ -840,7 +854,7 @@ ${message}
 
         // test chain
         // const privateKey =
-        ;('0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80')
+        // '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
         // contractAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
         // provider = getDefaultProvider('http://localhost:8545/')
         // signer = new Wallet(privateKey, provider)

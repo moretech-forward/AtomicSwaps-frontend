@@ -920,7 +920,9 @@ ${message}
                 const reason = extractErrorReason(err)
                 console.log(reason)
 
-                showToast('Error confirm swap! ' + reason + '.', 'error')
+                if (!reason)
+                    showToast('Error confirm swap! ' + reason + '.', 'error')
+                else showToast('Error confirm swap!', 'error')
             } finally {
                 formLoader.classList.add('hidden')
             }

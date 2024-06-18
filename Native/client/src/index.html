@@ -761,6 +761,15 @@ ${message}
             hash_key_full.innerHTML = await contract.hashKey()
         }
 
+        function extractErrorReason(errorMessage) {
+            const regex = /reason="([^"]+)"/
+            const match = errorMessage.toString().match(regex)
+            if (match && match[1]) {
+                return match[1]
+            }
+            return null
+        }
+
         // test chain
         // const privateKey =
         //    '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
@@ -832,7 +841,12 @@ ${message}
                 form.reset()
             } catch (err) {
                 console.log(err)
-                showToast('Error confirm swap!', 'error')
+
+                const reason = extractErrorReason(err)
+                console.log(reason)
+                if (!reason)
+                    showToast('Error confirm swap! ' + reason + '.', 'error')
+                else showToast('Error confirm swap!', 'error')
             } finally {
                 formLoader.classList.add('hidden')
             }

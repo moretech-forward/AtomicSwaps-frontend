@@ -365,6 +365,18 @@
                     >
                         <li>
                             <p class="flex items-center justify-between">
+                                <span>Network: </span>
+                                <span id="network-content">Loading...</span>
+                            </p>
+                        </li>
+                        <li>
+                            <p class="flex items-center justify-between">
+                                <span>Chain id: </span>
+                                <span id="chain-id-content">Loading...</span>
+                            </p>
+                        </li>
+                        <li>
+                            <p class="flex items-center justify-between">
                                 <span>Key: </span>
                                 <span class="flex items-center"
                                     ><button
@@ -952,6 +964,9 @@ ${message}
         const hash_key_content = document.getElementById('hash-key-content')
         const hash_key_full = document.getElementById('hash-key-full')
 
+        const network_content = document.getElementById('network-content')
+        const chain_id_content = document.getElementById('chain-id-content')
+
         const setInfo = async () => {
             const deadline = await contract.deadline()
             if (deadline === 0n) {
@@ -979,6 +994,12 @@ ${message}
                 await contract.hashKey()
             )
             hash_key_full.innerHTML = await contract.hashKey()
+
+            // network-content
+            // chain-id-content
+            const network = await provider.getNetwork()
+            network_content.innerHTML = network.name
+            chain_id_content.innerHTML = network.chainId.toString()
         }
 
         function extractErrorReason(errorMessage) {

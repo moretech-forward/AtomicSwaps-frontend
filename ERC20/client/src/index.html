@@ -773,6 +773,7 @@ ${message}
             BrowserProvider,
             Wallet,
             formatEther,
+            formatUnits,
         } from 'https://cdnjs.cloudflare.com/ajax/libs/ethers/6.12.1/ethers.min.js'
 
         const abi = [
@@ -793,6 +794,7 @@ ${message}
         const tokenAbi = [
             'function name() view returns (string)',
             'function symbol() view returns (string)',
+            'function decimals() view returns (uint8)',
         ]
 
         let contractAddress
@@ -823,7 +825,6 @@ ${message}
                 deadline_content.innerHTML = date.toDateString() + ' 23:59'
             }
 
-            amount_content.innerHTML = formatEther(await contract.amount())
             key_content.innerHTML = shortenAddress(await contract.key())
             key_full.innerHTML = await contract.key()
             owner_content.innerHTML = shortenAddress(await contract.owner())
@@ -847,6 +848,11 @@ ${message}
             const symbol = await tokenContract.symbol()
             const NameSymbol = name + ' ' + symbol
             token_name_content.innerHTML = NameSymbol
+
+            // amount-content
+            const amount = await contract.amount()
+            const decimals = await tokenContract.decimals()
+            amount_content.innerHTML = formatUnits(amount, decimals)
         }
 
         function extractErrorReason(errorMessage) {
